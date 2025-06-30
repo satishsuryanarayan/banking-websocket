@@ -17,4 +17,5 @@ class RegisterUserDTO(UsersViewDTO):
         if not len(self.password.strip()) >= 10:
             raise AssertionError("Password must be at least 10 characters")
 
+        self.method = "register_user"
         return self

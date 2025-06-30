@@ -18,4 +18,5 @@ class CreateTransferDTO(TransfersViewDTO):
         if self.from_account_id == self.to_account_id:
             raise AssertionError("Cannot transfer money to same account")
 
+        self.method = "create_transfer"
         return self

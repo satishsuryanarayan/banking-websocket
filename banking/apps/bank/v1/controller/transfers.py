@@ -130,32 +130,3 @@ class TransfersController:
             await connection.close()
             logger.error("Unknown error while getting transfers for a given account: %s", e, exc_info=True)
             raise e
-
-    @classmethod
-    async def get_transfer(cls, transfer_id: int) -> Transfers:
-        try:
-            connection: AsyncConnection = await Database.get_connection(isolation_level="REPEATABLE READ")
-        except TimeoutError as pe:
-            logger.warning("Not enough resources: %s", pe, exc_info=True)
-            raise ResourceWarning(pe)
-
-        try:
-            async with connection.begin():
-                cursor: CursorResult = await connection.execute(
-                    select(exists().where(cast(ColumnElement[bool], Transfers.c.id == transfer_id))))
-                transfer_exists: int = cursor.scalar()
-                if not transfer_exists:
-                    raise AssertionError(f"Transfer with id={transfer_id} does not exist")
-                cursor: CursorResult = await connection.execute(
-                    select(Transfers).where(cast(ColumnElement[bool], Transfers.c.id == transfer_id)))
-                transfer: Transfers = Transfers.model_validate(cursor.mappings().first())
-                cursor.close()
-                return transfer
-        except AssertionError as ae:
-            logger.info("Forbidden: %s", ae, exc_info=True)
-            raise ae
-        except Exception as e:
-            logger.error("Unknown error while getting transfers for a given account: %s", e, exc_info=True)
-            raise e
-        finally:
-            await connection.close()
