@@ -1,0 +1,44 @@
+version: 3
+
+tasks:
+  clean:
+    desc: Cleans caching, pyc and pycache files
+    cmds:
+      - find . -type f -name "*.pyc" -delete || true
+      - find . -type d -name "*__pycache__*" -delete
+
+  requirements:
+    desc: Install requirements for production
+    cmds:
+      - pip install -r requirements/base.txt
+
+  run:
+    desc: Starts banking in production mode
+    env:
+      ESMERALD_SETTINGS_MODULE: banking.configs.settings.AppSettings
+    cmds:
+      - esmerald runserver --host 0.0.0.0 --port 8000 --reload --workers 4
+
+  development_requirements:
+    desc: Install requirements for development
+    cmds:
+      - pip install -r requirements/development.txt
+
+  development:
+    desc: Starts banking in development mode
+    env:
+      ESMERALD_SETTINGS_MODULE: banking.configs.development.settings.DevelopmentAppSettings
+    cmds:
+      - esmerald runserver --host 0.0.0.0 --port 8000
+
+  test_requirements:
+    desc: Install requirements for testing
+    cmds:
+      - pip install -r requirements/testing.txt
+
+  test:
+    desc: Run the suite of tests
+    env:
+      ESMERALD_SETTINGS_MODULE: banking.configs.testing.settings.TestingAppSettings
+    cmds:
+      - pytest -s

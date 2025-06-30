@@ -1,0 +1,32 @@
+import base64
+import binascii
+
+from esmerald.exceptions import NotAuthorized
+from esmerald.middleware import BaseAuthMiddleware
+from esmerald.middleware.authentication import AuthResult
+from lilya._internal._connection import Connection
+
+from banking.apps.bank.v1.controller.users import UsersController
+
+
+class HTTPBasicAuth(BaseAuthMiddleware):
+    def __init__(self, app: "ASGIApp"):
+        super().__init__(app)
+        self.app = app
+
+    async def authenticate(self, request: Connection) -> AuthResult:
+        auth_header = request.headers.get("Authorization")
+
+        if not auth_header or not auth_header.startswith("Basic "):
+            raise NotAuthorized("Invalid user credentials", headers={"WWW-Authenticate": "Basic"})
+
+        encoded_credentials = auth_header[len("Basic "):].strip()
+        try:
+            credentials = base64.b64decode(encoded_credentials).decode("utf-8")
+            username, password = credentials.split(":", 1)
+            if await UsersController.validate_user(username, password):
+                return AuthResult(user=username)
+            else:
+                raise NotAuthorized("Invalid user credentials", headers={"WWW-Authenticate": "Basic"})
+        except (binascii.Error, ValueError):
+            raise NotAuthorized("Invalid user credentials", headers={"WWW-Authenticate": "Basic"})

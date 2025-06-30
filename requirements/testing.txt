@@ -1,0 +1,6 @@
+-r base.txt
+
+httpx
+pytest
+pytest-cov
+pytest-asyncio

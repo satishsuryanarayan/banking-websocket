@@ -1,0 +1,7 @@
+asyncmy>=0.2.10
+bcrypt>=4.3.0
+cryptography>=45.0.4
+esmerald>=3.8.1
+gunicorn>=23.0.0
+uvicorn[standard]>=0.34.3
+SQLAlchemy[asyncio]>=2.0.41
