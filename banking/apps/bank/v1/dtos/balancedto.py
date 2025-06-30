@@ -1,10 +1,10 @@
 from datetime import datetime
 from decimal import Decimal
 
-from pydantic import BaseModel
+from banking.apps.bank.v1.dtos.views.accountsviewdto import AccountsViewDTO
 
 
-class Balance(BaseModel):
+class BalanceDTO(AccountsViewDTO):
     account_id: int
     amount: Decimal
     last_updated_time: datetime

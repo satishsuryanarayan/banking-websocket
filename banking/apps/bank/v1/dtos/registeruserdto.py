@@ -1,8 +1,10 @@
-from pydantic import BaseModel, EmailStr, model_validator
+from pydantic import EmailStr, model_validator
 from typing_extensions import Self
 
+from banking.apps.bank.v1.dtos.views.usersviewdto import UsersViewDTO
 
-class RegisterUser(BaseModel):
+
+class RegisterUserDTO(UsersViewDTO):
     username: str
     password: str
     email: EmailStr
@@ -14,4 +16,5 @@ class RegisterUser(BaseModel):
 
         if not len(self.password.strip()) >= 10:
             raise AssertionError("Password must be at least 10 characters")
+
         return self

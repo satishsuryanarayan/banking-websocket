@@ -8,14 +8,13 @@ from sqlalchemy.sql.elements import ColumnElement
 from sqlalchemy.sql.expression import exists
 
 from banking.apps.bank.v1.controller.utils.database import Database
-from banking.apps.bank.v1.dtos.registeruser import RegisterUser
-from banking.apps.bank.v1.dtos.user import User
+from banking.apps.bank.v1.dtos.userdto import UserDTO
 from banking.apps.bank.v1.model.users import Users
 
 
 class UsersController:
     @classmethod
-    async def register_user(cls, register_user: RegisterUser) -> User:
+    async def register_user(cls, username: str, password: str, email: str) -> UserDTO:
         try:
             connection: AsyncConnection = await Database.get_connection(isolation_level="SERIALIZABLE")
         except TimeoutError as pe:
@@ -26,18 +25,18 @@ class UsersController:
             async with connection.begin():
                 cursor: CursorResult = await connection.execute(
                     select(
-                        exists().where(cast(ColumnElement[bool], Users.c.username == register_user.username))))
+                        exists().where(cast(ColumnElement[bool], Users.c.username == username))))
                 user_exists: int = cursor.scalar()
                 if not user_exists:
-                    hashed_password: bytes = bcrypt.hashpw(register_user.password.encode(), bcrypt.gensalt(rounds=6))
+                    hashed_password: bytes = bcrypt.hashpw(password.encode(), bcrypt.gensalt(rounds=6))
                     await connection.execute(
-                        insert(Users).values(username=register_user.username, password=hashed_password,
-                                             email=register_user.email))
-                    user: User = User(username=register_user.username, password=hashed_password.decode(),
-                                      email=register_user.email)
+                        insert(Users).values(username=username, password=hashed_password,
+                                             email=email))
+                    user: UserDTO = UserDTO(username=username, password=hashed_password.decode(),
+                                            email=email)
                     return user
                 else:
-                    raise AssertionError(f"Username={register_user.username} already exists")
+                    raise AssertionError(f"Username={username} already exists")
         except AssertionError as ae:
             logger.error("Assertion failure: %s", ae, exc_info=False)
             raise ae

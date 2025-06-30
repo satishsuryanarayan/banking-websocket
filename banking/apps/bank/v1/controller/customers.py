@@ -11,8 +11,8 @@ from sqlalchemy.sql.expression import exists
 
 from banking.apps.bank.v1.controller.utils.database import Database
 from banking.apps.bank.v1.controller.utils.listgenerator import list_generator
-from banking.apps.bank.v1.dtos.createcustomer import CreateCustomer
-from banking.apps.bank.v1.dtos.customer import Customer
+from banking.apps.bank.v1.dtos.createcustomerdto import CreateCustomers
+from banking.apps.bank.v1.dtos.customerdto import Customers
 from banking.apps.bank.v1.model.customers import Customers
 
 
@@ -41,7 +41,7 @@ class CustomersController:
                 cursor: AsyncResult = await connection.stream(
                     select(Customers).order_by(Customers.c.creation_time))
 
-            return list_generator(cursor.mappings(), connection, Customer)
+            return list_generator(cursor.mappings(), connection, Customers)
         except Exception as e:
             await connection.rollback()
             await connection.close()
@@ -49,7 +49,7 @@ class CustomersController:
             raise e
 
     @classmethod
-    async def create_customer(cls, crt_customer: CreateCustomer) -> Customer:
+    async def create_customer(cls, crt_customer: CreateCustomers) -> Customers:
         try:
             connection: AsyncConnection = await Database.get_connection(isolation_level="SERIALIZABLE")
         except TimeoutError as pe:
@@ -63,7 +63,7 @@ class CustomersController:
                     insert(Customers).values(name=crt_customer.name, creation_time=now))
                 customer_id: int = cursor.inserted_primary_key[0]
                 cursor.close()
-                customer: Customer = Customer(id=customer_id, name=crt_customer.name, creation_time=now)
+                customer: Customers = Customers(id=customer_id, name=crt_customer.name, creation_time=now)
                 return customer
         except Exception as e:
             logger.error("Unknown error while creating customer: %s", e, exc_info=True)
@@ -72,7 +72,7 @@ class CustomersController:
             await connection.close()
 
     @classmethod
-    async def get_customer(cls, customer_id: int) -> Customer:
+    async def get_customer(cls, customer_id: int) -> Customers:
         try:
             connection: AsyncConnection = await Database.get_connection(isolation_level="REPEATABLE READ")
         except TimeoutError as pe:
@@ -88,7 +88,7 @@ class CustomersController:
                     raise AssertionError(f"Customer with id={customer_id} does not exist")
                 cursor: CursorResult = await connection.execute(
                     select(Customers).where(cast(ColumnElement[bool], Customers.c.id == customer_id)))
-                customer: Customer = Customer.model_validate(cursor.mappings().first())
+                customer: Customers = Customers.model_validate(cursor.mappings().first())
                 cursor.close()
                 return customer
         except Exception as e:

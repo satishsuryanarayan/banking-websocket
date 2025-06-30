@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from typing import cast, AsyncGenerator
 
 from esmerald.logging import logger
@@ -11,9 +12,9 @@ from sqlalchemy.sql.expression import exists
 
 from banking.apps.bank.v1.controller.utils.database import Database
 from banking.apps.bank.v1.controller.utils.listgenerator import list_generator
-from banking.apps.bank.v1.dtos.account import Account
-from banking.apps.bank.v1.dtos.balance import Balance
-from banking.apps.bank.v1.dtos.createaccount import CreateAccount
+from banking.apps.bank.v1.dtos.accountdto import AccountDTO
+from banking.apps.bank.v1.dtos.balancedto import BalanceDTO
+from banking.apps.bank.v1.dtos.createaccountdto import CreateAccountDTO
 from banking.apps.bank.v1.model.accounts import Accounts
 from banking.apps.bank.v1.model.balances import Balances
 from banking.apps.bank.v1.model.customers import Customers
@@ -44,7 +45,7 @@ class AccountsController:
                 cursor: AsyncResult = await connection.stream(
                     select(Accounts).order_by(Accounts.c.creation_time))
 
-            return list_generator(cursor.mappings(), connection, Account)
+            return list_generator(cursor.mappings(), connection, AccountDTO)
         except Exception as e:
             await connection.rollback()
             await connection.close()
@@ -52,7 +53,7 @@ class AccountsController:
             raise e
 
     @classmethod
-    async def create_account(cls, crt_account: CreateAccount) -> Account:
+    async def create_account(cls, customer_id: int, amount: Decimal) -> AccountDTO:
         try:
             connection: AsyncConnection = await Database.get_connection(isolation_level="SERIALIZABLE")
         except TimeoutError as pe:
@@ -62,20 +63,20 @@ class AccountsController:
         try:
             async with connection.begin():
                 cursor: CursorResult = await connection.execute(select(
-                    exists().where(cast(ColumnElement[bool], Customers.c.id == crt_account.customer_id))))
+                    exists().where(cast(ColumnElement[bool], Customers.c.id == customer_id))))
                 customer_exists: int = cursor.scalar()
                 if not customer_exists:
-                    raise AssertionError(f"Customer with id={crt_account.customer_id} does not exist")
+                    raise AssertionError(f"Customer with id={customer_id} does not exist")
 
                 now: datetime = datetime.now()
                 cursor: CursorResult = await connection.execute(
-                    insert(Accounts).values(customer_id=crt_account.customer_id, creation_time=now))
+                    insert(Accounts).values(customer_id=customer_id, creation_time=now))
                 account_id: int = cursor.inserted_primary_key[0]
                 cursor.close()
                 await connection.execute(
-                    insert(Balances).values(account_id=account_id, amount=crt_account.amount,
+                    insert(Balances).values(account_id=account_id, amount=amount,
                                             last_updated_time=now))
-                account: Account = Account(id=account_id, customer_id=crt_account.customer_id, creation_time=now)
+                account: AccountDTO = AccountDTO(id=account_id, customer_id=customer_id, creation_time=now)
                 return account
         except AssertionError as ae:
             logger.info("Forbidden: %s", ae, exc_info=True)
@@ -87,7 +88,7 @@ class AccountsController:
             await connection.close()
 
     @classmethod
-    async def get_account(cls, account_id: int) -> Account:
+    async def get_account(cls, account_id: int) -> AccountDTO:
         try:
             connection: AsyncConnection = await Database.get_connection(isolation_level="REPEATABLE READ")
         except TimeoutError as pe:
@@ -103,7 +104,7 @@ class AccountsController:
                     raise AssertionError(f"Account with id={account_id} does not exist")
                 cursor: CursorResult = await connection.execute(
                     select(Accounts).where(cast(ColumnElement[bool], Accounts.c.id == account_id)))
-                account: Account = Account.model_validate(cursor.mappings().first())
+                account: AccountDTO = AccountDTO.model_validate(cursor.mappings().first())
                 cursor.close()
                 return account
         except AssertionError as ae:
@@ -133,7 +134,7 @@ class AccountsController:
                 select(Accounts).where(cast(ColumnElement[bool], Accounts.c.customer_id == customer_id)).order_by(
                     Accounts.c.id))
 
-            return list_generator(cursor.mappings(), connection, Account)
+            return list_generator(cursor.mappings(), connection, AccountDTO)
         except AssertionError as ae:
             await connection.rollback()
             await connection.close()
@@ -146,7 +147,7 @@ class AccountsController:
             raise e
 
     @classmethod
-    async def get_account_balance(cls, account_id: int) -> Balance:
+    async def get_account_balance(cls, account_id: int) -> BalanceDTO:
         try:
             connection: AsyncConnection = await Database.get_connection(isolation_level="REPEATABLE READ")
         except TimeoutError as pe:
@@ -162,7 +163,7 @@ class AccountsController:
                     raise AssertionError(f"Account with id={account_id} does not exist")
                 cursor: CursorResult = await connection.execute(
                     select(Balances).where(cast(ColumnElement[bool], Balances.c.account_id == account_id)))
-                balance: Balance = Balance.model_validate(cursor.mappings().first())
+                balance: BalanceDTO = BalanceDTO.model_validate(cursor.mappings().first())
                 cursor.close()
 
                 return balance

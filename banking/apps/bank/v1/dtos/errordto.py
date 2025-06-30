@@ -1,5 +1,5 @@
 from pydantic import BaseModel
 
 
-class Error(BaseModel):
+class ErrorDTO(BaseModel):
     detail: str

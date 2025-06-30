@@ -1,10 +1,12 @@
 from decimal import Decimal
 
-from pydantic import BaseModel, model_validator
+from pydantic import model_validator
 from typing_extensions import Self
 
+from banking.apps.bank.v1.dtos.views.transfersviewdto import TransfersViewDTO
 
-class CreateTransfer(BaseModel):
+
+class CreateTransferDTO(TransfersViewDTO):
     from_account_id: int
     to_account_id: int
     amount: Decimal
