@@ -2,6 +2,7 @@ import base64
 import binascii
 
 from esmerald.exceptions import NotAuthorized
+from esmerald.logging import logger
 from esmerald.middleware import BaseAuthMiddleware
 from esmerald.middleware.authentication import AuthResult
 from lilya._internal._connection import Connection
@@ -15,6 +16,7 @@ class HTTPBasicAuth(BaseAuthMiddleware):
         self.app = app
 
     async def authenticate(self, request: Connection) -> AuthResult:
+        logger.info("Authenticating...")
         auth_header = request.headers.get("Authorization")
 
         if not auth_header or not auth_header.startswith("Basic "):
@@ -24,6 +26,7 @@ class HTTPBasicAuth(BaseAuthMiddleware):
         try:
             credentials = base64.b64decode(encoded_credentials).decode("utf-8")
             username, password = credentials.split(":", 1)
+            logger.info(f"Authenticating username: {username} with provided password...")
             if await UsersController.validate_user(username, password):
                 return AuthResult(user=username)
             else:
