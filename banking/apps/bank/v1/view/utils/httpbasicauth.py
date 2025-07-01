@@ -26,10 +26,11 @@ class HTTPBasicAuth(BaseAuthMiddleware):
             raise NotAuthorized("Invalid user credentials", headers={"WWW-Authenticate": "Basic"})
 
         encoded_credentials = auth_header[len("Basic "):].strip()
+        logger.info(type(encoded_credentials))
         logger.info(encoded_credentials)
         try:
             try:
-                credentials = base64.b64decode(encoded_credentials + b"==")
+                credentials = base64.b64decode(encoded_credentials.encode("utf-8")).decode()
             except Exception as e:
                 logger.info("Exception occurred while decoding", e, exc_info=True)
                 raise e
