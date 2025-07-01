@@ -20,31 +20,23 @@ class BankView(APIView):
                 try:
                     module, cls = dto["view"].rsplit(".", 1)
                     view_type: Type[object|APIView] = getattr(importlib.import_module(module), cls)
-                    logger.debug("View class: " + str(view_type))
                     method_ref = getattr(view_type, dto["method"])
-                    logger.debug("View method: " + str(method_ref))
                     schema_type: Type[BaseDTO] = method_ref.__annotations__["param"]
-                    logger.debug("Schema type: " + str(schema_type))
                     return_type: Type[BaseDTO|Stream] = method_ref.__annotations__["return"]
-                    logger.debug("Return type: " + str(return_type))
                     if issubclass(return_type, BaseDTO):
-                        logger.info("Return type: " + str(return_type))
-                        logger.info("Handling BaseDTO...")
+                        logger.debug("Handling BaseDTO...")
                         response: BaseDTO = await method_ref(schema_type.model_validate(dto))
                         await socket.send_text(response.model_dump_json())
                     elif issubclass(return_type, Stream):
-                        logger.info("Return type: " + str(return_type))
-                        logger.info("Handling Stream...")
+                        logger.debug("Handling Stream...")
                         response: Stream = await method_ref(schema_type.model_validate(dto))
                         async for value in response.iterator:
-                            value_type = type(value)
-                            logger.info(f"Type of value is {value_type}")
                             await socket.send_text(value)
                     else:
                         logger.error("Unhandled return type: " + str(return_type))
                         raise RuntimeError("Unhandled return type: " + str(return_type))
                 except Exception as err:
-                    logger.info("Exception in handle()", err, exc_info=True)
+                    logger.info("Exception in websocket handler", err, exc_info=True)
                     response: ErrorDTO = ErrorDTO(detail=repr(err))
                     await socket.send_text(response.model_dump_json())
             else:
