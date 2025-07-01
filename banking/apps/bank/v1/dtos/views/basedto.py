@@ -1,5 +1,4 @@
-from pydantic import BaseModel, model_validator
-from typing_extensions import Self
+from pydantic import BaseModel
 
 
 class BaseDTO(BaseModel):
