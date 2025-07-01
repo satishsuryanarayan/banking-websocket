@@ -20,11 +20,9 @@ class HTTPBasicAuth(BaseAuthMiddleware):
         auth_header = request.headers.get("authorization")
 
         if not auth_header or not auth_header.startswith("Basic "):
-            logger.info("No authorization header")
             raise NotAuthorized("Invalid user credentials", headers={"WWW-Authenticate": "Basic"})
 
         encoded_credentials = auth_header[len("Basic b'"):-1].strip()
-        logger.info(encoded_credentials)
         try:
             credentials = base64.b64decode(encoded_credentials).decode("utf-8")
             username, password = credentials.split(":", 1)
