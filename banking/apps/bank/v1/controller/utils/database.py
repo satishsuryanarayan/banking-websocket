@@ -33,6 +33,7 @@ class Database:
         connection: AsyncConnection = await cls.get_connection("SERIALIZABLE")
         try:
             async with create_sadlock(connection, cls.key):
+                logger.info("Initializing database...")
                 async with connection.begin():
                     if settings.initdb:
                         await connection.run_sync(metadata.drop_all, checkfirst=True)
@@ -40,6 +41,6 @@ class Database:
                         await connection.run_sync(metadata.create_all, checkfirst=True)
                     except Exception as e:
                         logger.error("Exception occurred when initializing database:", e, exc_info=True)
-            logger.info("Database initialized.")
+                logger.info("Database initialized.")
         finally:
             await connection.close()
