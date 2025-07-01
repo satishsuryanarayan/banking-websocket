@@ -27,11 +27,11 @@ class BankView(APIView):
                     return_type: Any = method_ref.__annotations__["return"]
                     logger.debug("Return type: " + str(return_type))
                     if issubclass(return_type, BaseModel):
-                        logger.debug("Return type: " + str(return_type))
+                        logger.info("Return type: " + str(return_type))
                         response: BaseModel = await method_ref(schema_type.model_validate(dto))
                         await socket.send_text(response.model_dump_json())
                     elif issubclass(return_type, Stream):
-                        logger.debug("Return type: " + str(return_type))
+                        logger.info("Return type: " + str(return_type))
                         response: Stream = await method_ref(schema_type.model_validate(dto))
                         async for value in response.iterator():
                             value_type = type(value)
