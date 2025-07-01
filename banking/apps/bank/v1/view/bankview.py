@@ -7,7 +7,7 @@ from banking.apps.bank.v1.dtos.errordto import ErrorDTO
 class BankView(APIView):
     path = "/bank"
 
-    @websocket
+    @websocket(path="/")
     async def handle(self, socket: WebSocket) -> None:
         await socket.accept()
         while True:
