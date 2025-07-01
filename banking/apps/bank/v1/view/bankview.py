@@ -1,11 +1,12 @@
-from typing import Any
+import importlib
+from typing import Any, Type
 
 from esmerald import APIView, Stream, WebSocket, websocket
 from esmerald.logging import logger
-from pydantic import BaseModel
 
 from banking.apps.bank.v1.dtos.errordto import ErrorDTO
-import importlib
+from banking.apps.bank.v1.dtos.views.basedto import BaseDTO
+
 
 class BankView(APIView):
     path = "/bank"
@@ -18,18 +19,18 @@ class BankView(APIView):
             if "view" in dto and "method" in dto:
                 try:
                     module, cls = dto["view"].rsplit(".", 1)
-                    view_cls: Any = getattr(importlib.import_module(module), cls)
-                    logger.debug("View class: " + str(view_cls))
-                    method_ref = getattr(view_cls, dto["method"])
+                    view_type: Type[object|APIView] = getattr(importlib.import_module(module), cls)
+                    logger.debug("View class: " + str(view_type))
+                    method_ref = getattr(view_type, dto["method"])
                     logger.debug("View method: " + str(method_ref))
-                    schema_type: BaseModel = method_ref.__annotations__["dto"]
+                    schema_type: Type[BaseDTO] = method_ref.__annotations__["param"]
                     logger.debug("Schema type: " + str(schema_type))
-                    return_type: Any = method_ref.__annotations__["return"]
+                    return_type: Type[BaseDTO|Stream] = method_ref.__annotations__["return"]
                     logger.debug("Return type: " + str(return_type))
-                    if issubclass(return_type, BaseModel):
+                    if issubclass(return_type, BaseDTO):
                         logger.info("Return type: " + str(return_type))
-                        logger.info("Handling BaseModel...")
-                        response: BaseModel = await method_ref(schema_type.model_validate(dto))
+                        logger.info("Handling BaseDTO...")
+                        response: BaseDTO = await method_ref(schema_type.model_validate(dto))
                         await socket.send_text(response.model_dump_json())
                     elif issubclass(return_type, Stream):
                         logger.info("Return type: " + str(return_type))

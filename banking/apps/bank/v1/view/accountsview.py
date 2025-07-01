@@ -14,11 +14,11 @@ from banking.apps.bank.v1.dtos.getcustomeraccounts import GetCustomerAccountsDTO
 
 class AccountsView:
     @classmethod
-    async def get_all_accounts(cls, dto: GetAllAccountsDTO) -> Stream:
+    async def get_all_accounts(cls, param: GetAllAccountsDTO) -> Stream:
         try:
-            logger.debug(str(dto.from_time))
-            logger.debug(str(dto.to_time))
-            return Stream(iterator=await AccountsController.get_all_accounts(dto.from_time, dto.to_time))
+            logger.debug(str(param.from_time))
+            logger.debug(str(param.to_time))
+            return Stream(iterator=await AccountsController.get_all_accounts(param.from_time, param.to_time))
         except AssertionError as ae:
             raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ae))
         except ResourceWarning as rw:
@@ -27,9 +27,9 @@ class AccountsView:
             raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
     @classmethod
-    async def get_customer_accounts(cls, dto: GetCustomerAccountsDTO) -> Stream:
+    async def get_customer_accounts(cls, param: GetCustomerAccountsDTO) -> Stream:
         try:
-            return Stream(iterator=await AccountsController.get_customer_accounts(dto.customer_id))
+            return Stream(iterator=await AccountsController.get_customer_accounts(param.customer_id))
         except AssertionError as ae:
             raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ae))
         except ResourceWarning as rw:
@@ -38,9 +38,9 @@ class AccountsView:
             raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
     @classmethod
-    async def create_account(cls, dto: CreateAccountDTO) -> AccountDTO:
+    async def create_account(cls, param: CreateAccountDTO) -> AccountDTO:
         try:
-            return await AccountsController.create_account(dto.customer_id, dto.amount)
+            return await AccountsController.create_account(param.customer_id, param.amount)
         except AssertionError as ae:
             raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ae))
         except ResourceWarning as rw:
@@ -49,9 +49,9 @@ class AccountsView:
             raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
     @classmethod
-    async def get_account(cls, dto: GetAccountDTO) -> AccountDTO:
+    async def get_account(cls, param: GetAccountDTO) -> AccountDTO:
         try:
-            return await AccountsController.get_account(dto.account_id)
+            return await AccountsController.get_account(param.account_id)
         except AssertionError as ae:
             raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ae))
         except ResourceWarning as rw:
@@ -60,9 +60,9 @@ class AccountsView:
             raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
     @classmethod
-    async def get_account_balance(cls, dto: GetAccountBalanceDTO) -> BalanceDTO:
+    async def get_account_balance(cls, param: GetAccountBalanceDTO) -> BalanceDTO:
         try:
-            return await AccountsController.get_account_balance(dto.account_id)
+            return await AccountsController.get_account_balance(param.account_id)
         except AssertionError as ae:
             raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ae))
         except ResourceWarning as rw:

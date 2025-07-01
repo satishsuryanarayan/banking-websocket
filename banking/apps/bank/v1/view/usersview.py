@@ -23,9 +23,9 @@ class UsersView(APIView):
             401: OpenAPIResponse(model=ErrorDTO, description="Not authorized"),
         }
     )
-    async def register_user(self, dto: RegisterUserDTO) -> UserDTO:
+    async def register_user(self, param: RegisterUserDTO) -> UserDTO:
         try:
-            return await UsersController.register_user(dto.username, dto.password, str(dto.email))
+            return await UsersController.register_user(param.username, param.password, str(param.email))
         except AssertionError as ae:
             raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ae))
         except ResourceWarning as rw:

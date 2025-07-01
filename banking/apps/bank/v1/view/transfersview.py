@@ -9,10 +9,10 @@ from banking.apps.bank.v1.dtos.transferdto import TransferDTO
 
 class TransfersView:
     @classmethod
-    async def get_account_transfers(cls, dto: GetAccountTransfersDTO) -> Stream:
+    async def get_account_transfers(cls, param: GetAccountTransfersDTO) -> Stream:
         try:
             return Stream(
-                iterator=await TransfersController.get_account_transfers(dto.account_id, dto.from_time, dto.to_time))
+                iterator=await TransfersController.get_account_transfers(param.account_id, param.from_time, param.to_time))
         except AssertionError as ae:
             raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ae))
         except ResourceWarning as rw:
@@ -21,9 +21,9 @@ class TransfersView:
             raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
     @classmethod
-    async def create_transfer(cls, dto: CreateTransferDTO) -> TransferDTO:
+    async def create_transfer(cls, param: CreateTransferDTO) -> TransferDTO:
         try:
-            return await TransfersController.create_transfer(dto.from_account_id, dto.to_account_id, dto.amount)
+            return await TransfersController.create_transfer(param.from_account_id, param.to_account_id, param.amount)
         except AssertionError as ae:
             raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ae))
         except ResourceWarning as rw:

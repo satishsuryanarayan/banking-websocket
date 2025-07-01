@@ -10,9 +10,9 @@ from banking.apps.bank.v1.dtos.getcustomerdto import GetCustomerDTO
 
 class CustomersView:
     @classmethod
-    async def get_all_customers(cls, dto: GetAllCustomersDTO) -> Stream:
+    async def get_all_customers(cls, param: GetAllCustomersDTO) -> Stream:
         try:
-            return Stream(iterator=await CustomersController.get_all_customers(dto.from_time, dto.to_time))
+            return Stream(iterator=await CustomersController.get_all_customers(param.from_time, param.to_time))
         except AssertionError as ae:
             raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ae))
         except ResourceWarning as rw:
@@ -21,9 +21,9 @@ class CustomersView:
             raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
     @classmethod
-    async def get_customer(cls, dto: GetCustomerDTO) -> CustomerDTO:
+    async def get_customer(cls, param: GetCustomerDTO) -> CustomerDTO:
         try:
-            return await CustomersController.get_customer(dto.customer_id)
+            return await CustomersController.get_customer(param.customer_id)
         except AssertionError as ae:
             raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ae))
         except ResourceWarning as rw:
@@ -32,9 +32,9 @@ class CustomersView:
             raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
     @classmethod
-    async def create_customer(cls, dto: CreateCustomerDTO) -> CustomerDTO:
+    async def create_customer(cls, param: CreateCustomerDTO) -> CustomerDTO:
         try:
-            return await CustomersController.create_customer(dto.name)
+            return await CustomersController.create_customer(param.name)
         except AssertionError as ae:
             raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ae))
         except ResourceWarning as rw:
