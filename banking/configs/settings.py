@@ -12,7 +12,7 @@ class AppSettings(EsmeraldAPISettings):
     title: str = "Banking (Production)"
     environment: Optional[str] = EnvironmentType.PRODUCTION
     secret_key: str = "esmerald-insecure-8#^lz#h&amp;l647#y2s33djuw3ygfi@&amp;8k258-(%d#ssy5&amp;b3&amp;fj%"
-    debug: bool = False
+    debug: bool = True
 
     @property
     def initdb(self) -> bool:

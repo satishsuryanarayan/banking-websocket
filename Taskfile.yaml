@@ -17,7 +17,7 @@ tasks:
     env:
       ESMERALD_SETTINGS_MODULE: banking.configs.settings.AppSettings
     cmds:
-      - esmerald runserver --log-level Debug --proxy-headers True --host 0.0.0.0 --port 8000 --workers 2
+      - esmerald runserver --host 0.0.0.0 --port 8000 --workers 2
 
   development_requirements:
     desc: Install requirements for development
