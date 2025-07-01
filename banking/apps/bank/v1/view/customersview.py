@@ -34,7 +34,7 @@ class CustomersView:
     @classmethod
     async def create_customer(cls, dto: CreateCustomerDTO) -> CustomerDTO:
         try:
-            return await CustomersController.create_customer(dto.customer_id)
+            return await CustomersController.create_customer(dto.name)
         except AssertionError as ae:
             raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ae))
         except ResourceWarning as rw:

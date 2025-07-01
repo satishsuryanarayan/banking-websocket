@@ -11,8 +11,6 @@ from sqlalchemy.sql.expression import exists
 
 from banking.apps.bank.v1.controller.utils.database import Database
 from banking.apps.bank.v1.controller.utils.listgenerator import list_generator
-from banking.apps.bank.v1.dtos.createcustomerdto import CreateCustomers
-from banking.apps.bank.v1.dtos.customerdto import Customers
 from banking.apps.bank.v1.model.customers import Customers
 
 
@@ -49,7 +47,7 @@ class CustomersController:
             raise e
 
     @classmethod
-    async def create_customer(cls, crt_customer: CreateCustomers) -> Customers:
+    async def create_customer(cls, name: str) -> Customers:
         try:
             connection: AsyncConnection = await Database.get_connection(isolation_level="SERIALIZABLE")
         except TimeoutError as pe:
@@ -60,10 +58,10 @@ class CustomersController:
             async with connection.begin():
                 now: datetime = datetime.now()
                 cursor: CursorResult = await connection.execute(
-                    insert(Customers).values(name=crt_customer.name, creation_time=now))
+                    insert(Customers).values(name=name, creation_time=now))
                 customer_id: int = cursor.inserted_primary_key[0]
                 cursor.close()
-                customer: Customers = Customers(id=customer_id, name=crt_customer.name, creation_time=now)
+                customer: Customers = Customers(id=customer_id, name=name, creation_time=now)
                 return customer
         except Exception as e:
             logger.error("Unknown error while creating customer: %s", e, exc_info=True)

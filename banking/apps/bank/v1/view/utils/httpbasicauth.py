@@ -1,6 +1,5 @@
 import base64
 import binascii
-import json
 
 from esmerald.exceptions import NotAuthorized
 from esmerald.logging import logger
@@ -12,7 +11,7 @@ from banking.apps.bank.v1.controller.users import UsersController
 
 
 class HTTPBasicAuth(BaseAuthMiddleware):
-    def __init__(self, app: "ASGIApp"):
+    def __init__(self, app: "Bank App"):
         super().__init__(app)
         self.app = app
 
@@ -29,7 +28,11 @@ class HTTPBasicAuth(BaseAuthMiddleware):
         encoded_credentials = auth_header[len("Basic "):].strip()
         logger.info(encoded_credentials)
         try:
-            credentials = base64.b64decode(encoded_credentials)
+            try:
+                credentials = base64.b64decode(encoded_credentials)
+            except Exception as e:
+                logger.info(repr(e), exc_info=e)
+                raise e
             logger.info(str(credentials))
             credentials = credentials.decode("utf-8")
             logger.info(credentials)
