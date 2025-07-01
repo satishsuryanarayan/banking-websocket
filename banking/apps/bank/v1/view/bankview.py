@@ -24,13 +24,15 @@ class BankView(APIView):
                     logger.info("Schema type: " + str(schema_type))
                     return_type = method_ref.__annotations__["return"]
                     logger.info("Return type: " + str(return_type))
-                    if return_type != "Stream":
+                    if issubclass(return_type, BaseModel):
                         response: BaseModel = await method_ref(schema_type.model_validate(msg))
                         await socket.send_json(response.model_dump_json())
-                    else:
+                    elif issubclass(return_type, Stream):
                         response: Stream = await method_ref(schema_type.model_validate(msg))
                         async for value in response.iterator:
                             await socket.send_text(value)
+                    else:
+                        raise RuntimeError("Unhandled return type: " + str(return_type))
                 except Exception as err:
                     response: ErrorDTO = ErrorDTO(detail=repr(err))
                     await socket.send_json(response.model_dump_json())
