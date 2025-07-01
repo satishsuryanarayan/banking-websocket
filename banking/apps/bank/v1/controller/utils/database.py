@@ -3,7 +3,7 @@ from typing import Literal
 from esmerald import settings
 from esmerald.logging import logger
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncConnection, AsyncEngine
-from sqlalchemy_dlock import create_sadlock
+from sqlalchemy_dlock.asyncio import create_async_sadlock
 
 from banking.apps.bank.v1.model.metadata import metadata
 
@@ -32,7 +32,7 @@ class Database:
     async def init(cls) -> None:
         connection: AsyncConnection = await cls.get_connection("SERIALIZABLE")
         try:
-            async with create_sadlock(connection, cls.key):
+            async with create_async_sadlock(connection, cls.key):
                 logger.info("Initializing database...")
                 async with connection.begin():
                     if settings.initdb:
