@@ -32,9 +32,9 @@ class Database:
         try:
             async with connection.begin():
                 if settings.initdb:
-                    await connection.run_sync(metadata.drop_all)
+                    await connection.run_sync(metadata.drop_all, checkfirst=True)
                 try:
-                    await connection.run_sync(metadata.create_all)
+                    await connection.run_sync(metadata.create_all, checkfirst=True)
                 except Exception as e:
                     logger.error("Exception occurred when initializing database:", e, exc_info=True)
             logger.info("Database initialized.")
