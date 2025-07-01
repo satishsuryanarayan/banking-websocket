@@ -38,6 +38,7 @@ class BankView(APIView):
                     else:
                         raise RuntimeError("Unhandled return type: " + str(return_type))
                 except Exception as err:
+                    logger.info("Exception in handle()", err, exc_info=True)
                     response: ErrorDTO = ErrorDTO(detail=repr(err))
                     await socket.send_text(response.model_dump_json())
             else:
