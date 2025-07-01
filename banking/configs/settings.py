@@ -28,7 +28,7 @@ class AppSettings(EsmeraldAPISettings):
 
     @property
     def pool_size(self):
-        return 2
+        return 4
 
     @property
     def mysql_username(self) -> str:
