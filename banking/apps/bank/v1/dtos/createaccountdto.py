@@ -10,10 +10,13 @@ class CreateAccountDTO(AccountsViewDTO):
     customer_id: int
     amount: Decimal
 
+    def __init__(self, **data):
+        super().__init__(**data)
+        self.method = "create_account"
+
     @model_validator(mode="after")
     def validate_create_account(self) -> Self:
         if not self.amount > 0:
             raise AssertionError("Amount must be positive")
 
-        self.method = "create_account"
         return self

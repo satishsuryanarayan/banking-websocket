@@ -9,6 +9,10 @@ class RegisterUserDTO(UsersViewDTO):
     password: str
     email: EmailStr
 
+    def __init__(self, **data):
+        super().__init__(**data)
+        self.method = "register_user"
+
     @model_validator(mode="after")
     def validate_create_user(self) -> Self:
         if not len(self.username.strip()) >= 6:
@@ -17,5 +21,4 @@ class RegisterUserDTO(UsersViewDTO):
         if not len(self.password.strip()) >= 10:
             raise AssertionError("Password must be at least 10 characters")
 
-        self.method = "register_user"
         return self

@@ -11,6 +11,10 @@ class CreateTransferDTO(TransfersViewDTO):
     to_account_id: int
     amount: Decimal
 
+    def __init__(self, **data):
+        super().__init__(**data)
+        self.method = "create_transfer"
+
     @model_validator(mode="after")
     def validate_create_transfer(self) -> Self:
         if not self.amount > 0:
@@ -18,5 +22,4 @@ class CreateTransferDTO(TransfersViewDTO):
         if self.from_account_id == self.to_account_id:
             raise AssertionError("Cannot transfer money to same account")
 
-        self.method = "create_transfer"
         return self
