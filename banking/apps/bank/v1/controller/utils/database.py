@@ -3,6 +3,7 @@ from typing import Literal
 from esmerald import settings
 from esmerald.logging import logger
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncConnection, AsyncEngine
+from sqlalchemy_dlock import create_sadlock
 
 from banking.apps.bank.v1.model.metadata import metadata
 
@@ -10,6 +11,7 @@ from banking.apps.bank.v1.model.metadata import metadata
 class Database:
     isolation_level = Literal["REPEATABLE READ", "SERIALIZABLE"]
     engines: dict[isolation_level, AsyncEngine] = dict()
+    key: str = "DB_SCHEMA"
 
     @classmethod
     def connect(cls, db_config: dict) -> None:
@@ -30,13 +32,14 @@ class Database:
     async def init(cls) -> None:
         connection: AsyncConnection = await cls.get_connection("SERIALIZABLE")
         try:
-            async with connection.begin():
-                if settings.initdb:
-                    await connection.run_sync(metadata.drop_all, checkfirst=True)
-                try:
-                    await connection.run_sync(metadata.create_all, checkfirst=True)
-                except Exception as e:
-                    logger.error("Exception occurred when initializing database:", e, exc_info=True)
+            async with create_sadlock(connection, cls.key):
+                async with connection.begin():
+                    if settings.initdb:
+                        await connection.run_sync(metadata.drop_all, checkfirst=True)
+                    try:
+                        await connection.run_sync(metadata.create_all, checkfirst=True)
+                    except Exception as e:
+                        logger.error("Exception occurred when initializing database:", e, exc_info=True)
             logger.info("Database initialized.")
         finally:
             await connection.close()

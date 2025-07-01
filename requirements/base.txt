@@ -5,3 +5,4 @@ esmerald>=3.8.1
 gunicorn>=23.0.0
 uvicorn[standard]>=0.34.3
 SQLAlchemy[asyncio]>=2.0.41
+sqlalchemy-dlock>=0.6.1.post2
