@@ -25,7 +25,7 @@ class UsersView(APIView):
     )
     async def register_user(self, dto: RegisterUserDTO) -> UserDTO:
         try:
-            return await UsersController.register_user(dto.user, dto.password, str(dto.email))
+            return await UsersController.register_user(dto.username, dto.password, str(dto.email))
         except AssertionError as ae:
             raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ae))
         except ResourceWarning as rw:
