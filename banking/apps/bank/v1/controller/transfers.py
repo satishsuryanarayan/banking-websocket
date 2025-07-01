@@ -12,6 +12,7 @@ from sqlalchemy.sql.expression import exists
 
 from banking.apps.bank.v1.controller.utils.database import Database
 from banking.apps.bank.v1.controller.utils.listgenerator import list_generator
+from banking.apps.bank.v1.dtos.transferdto import TransferDTO
 from banking.apps.bank.v1.model.relational import Accounts
 from banking.apps.bank.v1.model.relational import Balances
 from banking.apps.bank.v1.model.relational import Transfers
@@ -19,7 +20,7 @@ from banking.apps.bank.v1.model.relational import Transfers
 
 class TransfersController:
     @classmethod
-    async def create_transfer(cls, from_account_id: int, to_account_id: int, amount: Decimal) -> Transfers:
+    async def create_transfer(cls, from_account_id: int, to_account_id: int, amount: Decimal) -> TransferDTO:
         try:
             connection: AsyncConnection = await Database.get_connection(isolation_level="SERIALIZABLE")
         except TimeoutError as pe:
@@ -87,7 +88,7 @@ class TransfersController:
                     insert(Transfers).values(from_account_id=from_account_id,
                                              to_account_id=to_account_id, amount=amount,
                                              time=now))
-                transfer: Transfers = Transfers(from_account_id=from_account_id,
+                transfer: TransferDTO = TransferDTO(from_account_id=from_account_id,
                                                 to_account_id=to_account_id,
                                                 amount=amount, time=now)
                 return transfer
