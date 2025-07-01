@@ -9,7 +9,6 @@ import importlib
 
 class BankView(APIView):
     path = "/bank"
-    module = importlib.import_module("banking.apps.bank.v1.view")
 
     @websocket(path="/")
     async def handle(self, socket: WebSocket) -> None:
@@ -18,7 +17,8 @@ class BankView(APIView):
             dto = await socket.receive_json()
             if "view" in dto and "method" in dto:
                 try:
-                    view_cls: Any = getattr(self.module, dto["view"])
+                    module, cls = dto["view"].rsplit(".", 1)
+                    view_cls: Any = getattr(importlib.import_module(module), cls)
                     logger.info("View class: " + str(view_cls))
                     method_ref = getattr(view_cls, dto["method"])
                     logger.info("View method: " + str(method_ref))
