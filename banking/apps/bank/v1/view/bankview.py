@@ -28,7 +28,7 @@ class BankView(APIView):
                     logger.debug("Return type: " + str(return_type))
                     if issubclass(return_type, BaseModel):
                         response: BaseModel = await method_ref(schema_type.model_validate(dto))
-                        await socket.send_json(response.model_dump_json())
+                        await socket.send_text(response.model_dump_json())
                     elif issubclass(return_type, Stream):
                         response: Stream = await method_ref(schema_type.model_validate(dto))
                         async for value in response.iterator:
@@ -37,7 +37,7 @@ class BankView(APIView):
                         raise RuntimeError("Unhandled return type: " + str(return_type))
                 except Exception as err:
                     response: ErrorDTO = ErrorDTO(detail=repr(err))
-                    await socket.send_json(response.model_dump_json())
+                    await socket.send_text(response.model_dump_json())
             else:
                 error: ErrorDTO = ErrorDTO(detail=dto["Invalid DTO"])
-                await socket.send_json(error)
+                await socket.send_text(error.model_dump_json())
