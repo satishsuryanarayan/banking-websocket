@@ -36,9 +36,9 @@ class Database:
                 if lock.locked:
                     logger.info("Initializing database...")
                     if settings.initdb:
-                        await connection.run_sync(metadata.drop_all, checkfirst=True)
+                        await connection.run_sync(metadata.drop_all)
                     try:
-                        await connection.run_sync(metadata.create_all, checkfirst=True)
+                        await connection.run_sync(metadata.create_all)
                     except Exception as e:
                         logger.error("Exception occurred when initializing database:", e, exc_info=True)
                     logger.info("Database initialized.")
