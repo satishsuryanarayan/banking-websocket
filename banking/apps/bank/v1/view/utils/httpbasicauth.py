@@ -1,5 +1,6 @@
 import base64
 import binascii
+import json
 
 from esmerald.exceptions import NotAuthorized
 from esmerald.logging import logger
@@ -28,7 +29,9 @@ class HTTPBasicAuth(BaseAuthMiddleware):
         encoded_credentials = auth_header[len("Basic "):].strip()
         logger.info(encoded_credentials)
         try:
-            credentials = base64.b64decode(encoded_credentials).decode("utf-8")
+            credentials = base64.b64decode(encoded_credentials)
+            logger.info(str(credentials))
+            credentials = credentials.decode("utf-8")
             logger.info(credentials)
             username, password = credentials.split(":", 1)
             logger.info(f"Authenticating username: {username} with provided password...")
