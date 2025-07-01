@@ -29,7 +29,7 @@ class HTTPBasicAuth(BaseAuthMiddleware):
         logger.info(encoded_credentials)
         try:
             try:
-                credentials = base64.b64decode(encoded_credentials)
+                credentials = base64.b64decode(encoded_credentials + b"==")
             except Exception as e:
                 logger.info("Exception occurred while decoding", e, exc_info=True)
                 raise e
