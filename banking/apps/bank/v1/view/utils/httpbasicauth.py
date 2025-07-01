@@ -25,7 +25,8 @@ class HTTPBasicAuth(BaseAuthMiddleware):
             logger.info("No authorization header")
             raise NotAuthorized("Invalid user credentials", headers={"WWW-Authenticate": "Basic"})
 
-        encoded_credentials = auth_header[len("Basic "):].strip() + "=="
+        encoded_credentials = auth_header[len("Basic "):].strip()
+        encoded_credentials = encoded_credentials + "=="
         logger.info(encoded_credentials)
         try:
             try:
