@@ -14,7 +14,6 @@ class HTTPBasicAuth(BaseAuthMiddleware):
     def __init__(self, app: "Bank App"):
         super().__init__(app)
         self.app = app
-        self.padding = "=="
 
     async def authenticate(self, request: Connection) -> AuthResult:
         logger.info("Authenticating...")
@@ -24,18 +23,10 @@ class HTTPBasicAuth(BaseAuthMiddleware):
             logger.info("No authorization header")
             raise NotAuthorized("Invalid user credentials", headers={"WWW-Authenticate": "Basic"})
 
-        encoded_credentials = auth_header[len("Basic "):].strip()
-        encoded_credentials = encoded_credentials + self.padding
+        encoded_credentials = auth_header[len("Basic b'"):-1].strip()
         logger.info(encoded_credentials)
         try:
-            try:
-                credentials = base64.b64decode(encoded_credentials).decode()
-            except Exception as e:
-                logger.info("Exception occurred while decoding", e, exc_info=True)
-                raise e
-            logger.info(str(credentials))
-            credentials = credentials.decode("utf-8")
-            logger.info(credentials)
+            credentials = base64.b64decode(encoded_credentials).decode("utf-8")
             username, password = credentials.split(":", 1)
             logger.info(f"Authenticating username: {username} with provided password...")
             if await UsersController.validate_user(username, password):
