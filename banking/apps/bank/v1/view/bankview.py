@@ -32,6 +32,8 @@ class BankView(APIView):
                     elif issubclass(return_type, Stream):
                         response: Stream = await method_ref(schema_type.model_validate(dto))
                         async for value in response.iterator():
+                            value_type = type(value)
+                            logger.info(f"Type of value is {value_type}")
                             await socket.send_text(value)
                     else:
                         raise RuntimeError("Unhandled return type: " + str(return_type))
