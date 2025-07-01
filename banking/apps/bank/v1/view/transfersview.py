@@ -23,7 +23,7 @@ class TransfersView:
     @classmethod
     async def create_transfer(cls, dto: CreateTransferDTO) -> TransferDTO:
         try:
-            return await TransfersController.create_transfer(dto.from_account_id, dto.account_id, dto.amount)
+            return await TransfersController.create_transfer(dto.from_account_id, dto.to_account_id, dto.amount)
         except AssertionError as ae:
             raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ae))
         except ResourceWarning as rw:
