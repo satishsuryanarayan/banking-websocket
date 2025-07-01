@@ -19,13 +19,13 @@ class BankView(APIView):
                 try:
                     module, cls = dto["view"].rsplit(".", 1)
                     view_cls: Any = getattr(importlib.import_module(module), cls)
-                    logger.info("View class: " + str(view_cls))
+                    logger.debug("View class: " + str(view_cls))
                     method_ref = getattr(view_cls, dto["method"])
-                    logger.info("View method: " + str(method_ref))
+                    logger.debug("View method: " + str(method_ref))
                     schema_type: BaseModel = method_ref.__annotations__["dto"]
-                    logger.info("Schema type: " + str(schema_type))
+                    logger.debug("Schema type: " + str(schema_type))
                     return_type: Any = method_ref.__annotations__["return"]
-                    logger.info("Return type: " + str(return_type))
+                    logger.debug("Return type: " + str(return_type))
                     if issubclass(return_type, BaseModel):
                         response: BaseModel = await method_ref(schema_type.model_validate(dto))
                         await socket.send_json(response.model_dump_json())
