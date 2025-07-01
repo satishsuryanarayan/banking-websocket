@@ -16,7 +16,7 @@ class AppSettings(EsmeraldAPISettings):
 
     @property
     def initdb(self) -> bool:
-        return True
+        return False
 
     @property
     def serializable(self) -> IsolationLevel:

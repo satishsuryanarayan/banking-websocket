@@ -11,7 +11,7 @@ from sqlalchemy.sql.expression import exists
 
 from banking.apps.bank.v1.controller.utils.database import Database
 from banking.apps.bank.v1.controller.utils.listgenerator import list_generator
-from banking.apps.bank.v1.model.customers import Customers
+from banking.apps.bank.v1.model.relational import Customers
 
 
 class CustomersController:

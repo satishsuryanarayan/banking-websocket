@@ -9,7 +9,7 @@ from sqlalchemy.sql.expression import exists
 
 from banking.apps.bank.v1.controller.utils.database import Database
 from banking.apps.bank.v1.dtos.userdto import UserDTO
-from banking.apps.bank.v1.model.users import Users
+from banking.apps.bank.v1.model.relational import Users
 
 
 class UsersController:

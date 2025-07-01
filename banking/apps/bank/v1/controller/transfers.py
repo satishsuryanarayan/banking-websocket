@@ -12,9 +12,9 @@ from sqlalchemy.sql.expression import exists
 
 from banking.apps.bank.v1.controller.utils.database import Database
 from banking.apps.bank.v1.controller.utils.listgenerator import list_generator
-from banking.apps.bank.v1.model.accounts import Accounts
-from banking.apps.bank.v1.model.balances import Balances
-from banking.apps.bank.v1.model.transfers import Transfers
+from banking.apps.bank.v1.model.relational import Accounts
+from banking.apps.bank.v1.model.relational import Balances
+from banking.apps.bank.v1.model.relational import Transfers
 
 
 class TransfersController:

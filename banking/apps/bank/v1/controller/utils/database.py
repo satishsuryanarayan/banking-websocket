@@ -5,7 +5,7 @@ from esmerald.logging import logger
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncConnection, AsyncEngine
 from sqlalchemy_dlock.asyncio import create_async_sadlock
 
-from banking.apps.bank.v1.model.metadata import metadata
+from banking.apps.bank.v1.model.relational import metadata
 
 
 class Database:
@@ -31,11 +31,12 @@ class Database:
     @classmethod
     async def init(cls) -> None:
         connection: AsyncConnection = await cls.get_connection("SERIALIZABLE")
+        table_list = metadata.tables.keys()
         try:
             async with create_async_sadlock(connection, cls.key) as lock:
                 if lock.locked:
                     logger.info("Initializing database...")
-                    logger.info(str(metadata.tables.keys()))
+                    logger.info(f"Registered tables: {table_list}")
                     if settings.initdb:
                         logger.info("Dropping tables...")
                         await connection.run_sync(metadata.drop_all, checkfirst=True)
