@@ -36,7 +36,7 @@ class BankView(APIView):
                         logger.info("Return type: " + str(return_type))
                         logger.info("Handling Stream...")
                         response: Stream = await method_ref(schema_type.model_validate(dto))
-                        async for value in response.iterator():
+                        async for value in response.iterator:
                             value_type = type(value)
                             logger.info(f"Type of value is {value_type}")
                             await socket.send_text(value)
