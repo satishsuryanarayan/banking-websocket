@@ -26,8 +26,10 @@ class HTTPBasicAuth(BaseAuthMiddleware):
             raise NotAuthorized("Invalid user credentials", headers={"WWW-Authenticate": "Basic"})
 
         encoded_credentials = auth_header[len("Basic "):].strip()
+        logger.info(encoded_credentials)
         try:
             credentials = base64.b64decode(encoded_credentials).decode("utf-8")
+            logger.info(credentials)
             username, password = credentials.split(":", 1)
             logger.info(f"Authenticating username: {username} with provided password...")
             if await UsersController.validate_user(username, password):
