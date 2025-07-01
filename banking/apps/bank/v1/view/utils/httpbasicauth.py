@@ -17,7 +17,7 @@ class HTTPBasicAuth(BaseAuthMiddleware):
 
     async def authenticate(self, request: Connection) -> AuthResult:
         logger.info("Authenticating...")
-        auth_header = request.headers.get("Authorization")
+        auth_header = request.headers.get("authorization")
 
         if not auth_header or not auth_header.startswith("Basic "):
             logger.info("No authorization header")
