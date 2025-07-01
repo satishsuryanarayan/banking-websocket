@@ -35,9 +35,12 @@ class Database:
             async with create_async_sadlock(connection, cls.key) as lock:
                 if lock.locked:
                     logger.info("Initializing database...")
+                    logger.info(str(metadata.tables.keys()))
                     if settings.initdb:
+                        logger.info("Dropping tables...")
                         await connection.run_sync(metadata.drop_all, checkfirst=True)
                     try:
+                        logger.info("Creating tables...")
                         await connection.run_sync(metadata.create_all, checkfirst=True)
                     except Exception as e:
                         logger.error("Exception occurred when initializing database:", e, exc_info=True)
