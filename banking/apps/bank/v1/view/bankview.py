@@ -40,7 +40,7 @@ class BankView(APIView):
                             logger.info(f"Type of value is {value_type}")
                             await socket.send_text(value)
                     else:
-                        logger.debug("Return type: " + str(return_type))
+                        logger.error("Unhandled return type: " + str(return_type))
                         raise RuntimeError("Unhandled return type: " + str(return_type))
                 except Exception as err:
                     logger.info("Exception in handle()", err, exc_info=True)
