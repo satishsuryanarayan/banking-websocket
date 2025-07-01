@@ -36,7 +36,7 @@ class Database:
                 try:
                     await connection.run_sync(metadata.create_all)
                 except Exception as e:
-                    logger.error(repr(e))
+                    logger.error("Exception occurred when initializing database:", e, exc_info=True)
             logger.info("Database initialized.")
         finally:
             await connection.close()
