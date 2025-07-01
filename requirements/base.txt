@@ -1,4 +1,4 @@
-asyncmy>=0.2.10
+aiomysql>=0.2.0
 bcrypt>=4.3.0
 cryptography>=45.0.4
 esmerald>=3.8.1
