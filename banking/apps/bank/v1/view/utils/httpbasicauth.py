@@ -14,19 +14,18 @@ class HTTPBasicAuth(BaseAuthMiddleware):
     def __init__(self, app: "Bank App"):
         super().__init__(app)
         self.app = app
+        self.padding = "=="
 
     async def authenticate(self, request: Connection) -> AuthResult:
         logger.info("Authenticating...")
-        logger.info(str(request.headers))
         auth_header = request.headers.get("authorization")
-        logger.info(str(auth_header))
 
         if not auth_header or not auth_header.startswith("Basic "):
             logger.info("No authorization header")
             raise NotAuthorized("Invalid user credentials", headers={"WWW-Authenticate": "Basic"})
 
         encoded_credentials = auth_header[len("Basic "):].strip()
-        encoded_credentials = encoded_credentials + "=="
+        encoded_credentials = encoded_credentials + self.padding
         logger.info(encoded_credentials)
         try:
             try:
