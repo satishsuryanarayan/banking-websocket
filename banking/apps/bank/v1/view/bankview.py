@@ -3,6 +3,7 @@ from typing import Type
 
 from bank.datamodel.v1.dtos.error import ErrorDTO
 from bank.datamodel.v1.dtos.views.base import BaseDTO
+from bank.protocol.message import Message
 from esmerald import APIView, Stream, View, WebSocket, websocket
 from esmerald.logging import logger
 
@@ -12,7 +13,6 @@ class BankView(View):
 
     @websocket(path="/")
     async def handle(self, socket: WebSocket) -> None:
-        eom: str = "<.-.-.>"
         await socket.accept()
         while True:
             dto = await socket.receive_json()
@@ -32,7 +32,7 @@ class BankView(View):
                         response: Stream = await method_ref(schema_type.model_validate(dto))
                         async for value in response.iterator:
                             await socket.send_text(value)
-                        await socket.send_text(eom)
+                        await socket.send_text(Message.END)
                     else:
                         logger.error("Unhandled return type: " + str(return_type))
                         raise RuntimeError("Unhandled return type: " + str(return_type))
