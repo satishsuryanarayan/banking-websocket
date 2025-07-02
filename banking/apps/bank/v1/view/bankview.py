@@ -27,7 +27,7 @@ class BankView(View):
                     if issubclass(return_type, BaseDTO):
                         logger.debug("Handling BaseDTO...")
                         response: BaseDTO = await method_ref(schema_type.model_validate(dto))
-                        await socket.send_text(response.model_dump_json())
+                        await socket.send_text(response.model_dump_json(exclude_none=True))
                     elif issubclass(return_type, Stream):
                         logger.debug("Handling Stream...")
                         response: Stream = await method_ref(schema_type.model_validate(dto))
@@ -40,7 +40,7 @@ class BankView(View):
                 except Exception as err:
                     logger.info("Exception in websocket handler", err, exc_info=True)
                     response: ErrorDTO = ErrorDTO(detail=repr(err))
-                    await socket.send_text(response.model_dump_json())
+                    await socket.send_text(response.model_dump_json(exclude_none=True))
             else:
                 error: ErrorDTO = ErrorDTO(detail=dto["Invalid DTO"])
-                await socket.send_text(error.model_dump_json())
+                await socket.send_text(error.model_dump_json(exclude_none=True))

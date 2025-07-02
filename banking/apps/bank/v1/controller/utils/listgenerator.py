@@ -17,7 +17,7 @@ async def list_generator(cursor: AsyncMappingResult, connection: AsyncConnection
             serialized_data = []
             for row in results:
                 instance: BaseDTO = schema.model_validate(row)
-                serialized_data.append(instance.model_dump_json())
+                serialized_data.append(instance.model_dump_json(exclude_none=True))
             yield ", ".join(serialized_data)
             results = await cursor.fetchmany(size=size)
             if results:
