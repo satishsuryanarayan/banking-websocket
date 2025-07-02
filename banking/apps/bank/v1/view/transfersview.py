@@ -1,10 +1,10 @@
+from bank.datamodel.v1.dtos.createtransfer import CreateTransferDTO
+from bank.datamodel.v1.dtos.getaccounttransfers import GetAccountTransfersDTO
+from bank.datamodel.v1.dtos.transfer import TransferDTO
 from esmerald import Stream, HTTPException
 from lilya.status import HTTP_400_BAD_REQUEST, HTTP_503_SERVICE_UNAVAILABLE, HTTP_500_INTERNAL_SERVER_ERROR
 
 from banking.apps.bank.v1.controller.transfers import TransfersController
-from banking.apps.bank.v1.dtos.createtransferdto import CreateTransferDTO
-from banking.apps.bank.v1.dtos.getaccounttransfersdto import GetAccountTransfersDTO
-from banking.apps.bank.v1.dtos.transferdto import TransferDTO
 
 
 class TransfersView:

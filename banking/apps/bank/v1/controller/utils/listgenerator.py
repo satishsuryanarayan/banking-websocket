@@ -1,8 +1,7 @@
 from typing import AsyncGenerator, Type
 
+from bank.datamodel.v1.dtos.views.base import BaseDTO
 from sqlalchemy.ext.asyncio import AsyncConnection, AsyncMappingResult
-
-from banking.apps.bank.v1.dtos.views.basedto import BaseDTO
 
 chunk_size = 100
 

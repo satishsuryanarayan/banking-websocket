@@ -1,15 +1,15 @@
+from bank.datamodel.v1.dtos.account import AccountDTO
+from bank.datamodel.v1.dtos.balance import BalanceDTO
+from bank.datamodel.v1.dtos.createaccount import CreateAccountDTO
+from bank.datamodel.v1.dtos.getaccount import GetAccountDTO
+from bank.datamodel.v1.dtos.getaccountbalance import GetAccountBalanceDTO
+from bank.datamodel.v1.dtos.getallaccounts import GetAllAccountsDTO
+from bank.datamodel.v1.dtos.getcustomeraccounts import GetCustomerAccountsDTO
 from esmerald import Stream, HTTPException
 from esmerald.logging import logger
 from lilya.status import HTTP_400_BAD_REQUEST, HTTP_503_SERVICE_UNAVAILABLE, HTTP_500_INTERNAL_SERVER_ERROR
 
 from banking.apps.bank.v1.controller.accounts import AccountsController
-from banking.apps.bank.v1.dtos.accountdto import AccountDTO
-from banking.apps.bank.v1.dtos.balancedto import BalanceDTO
-from banking.apps.bank.v1.dtos.createaccountdto import CreateAccountDTO
-from banking.apps.bank.v1.dtos.getaccountbalancedto import GetAccountBalanceDTO
-from banking.apps.bank.v1.dtos.getaccountdto import GetAccountDTO
-from banking.apps.bank.v1.dtos.getallaccountsdto import GetAllAccountsDTO
-from banking.apps.bank.v1.dtos.getcustomeraccounts import GetCustomerAccountsDTO
 
 
 class AccountsView:

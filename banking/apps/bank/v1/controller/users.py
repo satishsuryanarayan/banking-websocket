@@ -1,6 +1,7 @@
 from typing import cast
 
 import bcrypt
+from bank.datamodel.v1.dtos.user import UserDTO
 from esmerald.logging import logger
 from sqlalchemy import insert, select, CursorResult
 from sqlalchemy.ext.asyncio import AsyncConnection
@@ -8,7 +9,6 @@ from sqlalchemy.sql.elements import ColumnElement
 from sqlalchemy.sql.expression import exists
 
 from banking.apps.bank.v1.controller.utils.database import Database
-from banking.apps.bank.v1.dtos.userdto import UserDTO
 from banking.apps.bank.v1.model.relational import Users
 
 

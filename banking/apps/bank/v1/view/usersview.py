@@ -1,12 +1,12 @@
+from bank.datamodel.v1.dtos.error import ErrorDTO
+from bank.datamodel.v1.dtos.registeruser import RegisterUserDTO
+from bank.datamodel.v1.dtos.user import UserDTO
 from esmerald import APIView, HTTPException
 from esmerald.openapi.datastructures import OpenAPIResponse
 from esmerald.routing.handlers import post
 from lilya.status import HTTP_400_BAD_REQUEST, HTTP_503_SERVICE_UNAVAILABLE, HTTP_500_INTERNAL_SERVER_ERROR
 
 from banking.apps.bank.v1.controller.users import UsersController
-from banking.apps.bank.v1.dtos.errordto import ErrorDTO
-from banking.apps.bank.v1.dtos.registeruserdto import RegisterUserDTO
-from banking.apps.bank.v1.dtos.userdto import UserDTO
 
 
 class UsersView(APIView):

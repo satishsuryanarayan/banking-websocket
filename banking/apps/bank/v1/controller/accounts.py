@@ -2,6 +2,8 @@ from datetime import datetime
 from decimal import Decimal
 from typing import cast, AsyncGenerator
 
+from bank.datamodel.v1.dtos.account import AccountDTO
+from bank.datamodel.v1.dtos.balance import BalanceDTO
 from esmerald.logging import logger
 from sqlalchemy import insert, select, and_
 from sqlalchemy.engine import CursorResult
@@ -12,8 +14,6 @@ from sqlalchemy.sql.expression import exists
 
 from banking.apps.bank.v1.controller.utils.database import Database
 from banking.apps.bank.v1.controller.utils.listgenerator import list_generator
-from banking.apps.bank.v1.dtos.accountdto import AccountDTO
-from banking.apps.bank.v1.dtos.balancedto import BalanceDTO
 from banking.apps.bank.v1.model.relational import Accounts
 from banking.apps.bank.v1.model.relational import Balances
 from banking.apps.bank.v1.model.relational import Customers

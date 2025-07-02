@@ -1,11 +1,11 @@
+from bank.datamodel.v1.dtos.createcustomer import CreateCustomerDTO
+from bank.datamodel.v1.dtos.customer import CustomerDTO
+from bank.datamodel.v1.dtos.getallcustomers import GetAllCustomersDTO
+from bank.datamodel.v1.dtos.getcustomer import GetCustomerDTO
 from esmerald import Stream, HTTPException
 from lilya.status import HTTP_400_BAD_REQUEST, HTTP_503_SERVICE_UNAVAILABLE, HTTP_500_INTERNAL_SERVER_ERROR
 
 from banking.apps.bank.v1.controller.customers import CustomersController
-from banking.apps.bank.v1.dtos.createcustomerdto import CreateCustomerDTO
-from banking.apps.bank.v1.dtos.customerdto import CustomerDTO
-from banking.apps.bank.v1.dtos.getallcustomersdto import GetAllCustomersDTO
-from banking.apps.bank.v1.dtos.getcustomerdto import GetCustomerDTO
 
 
 class CustomersView:

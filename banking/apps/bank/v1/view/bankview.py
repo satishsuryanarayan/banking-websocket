@@ -1,11 +1,10 @@
 import importlib
 from typing import Type
 
+from bank.datamodel.v1.dtos.error import ErrorDTO
+from bank.datamodel.v1.dtos.views.base import BaseDTO
 from esmerald import APIView, Stream, View, WebSocket, websocket
 from esmerald.logging import logger
-
-from banking.apps.bank.v1.dtos.errordto import ErrorDTO
-from banking.apps.bank.v1.dtos.views.basedto import BaseDTO
 
 
 class BankView(View):
