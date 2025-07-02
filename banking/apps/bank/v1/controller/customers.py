@@ -40,7 +40,7 @@ class CustomersController:
                 cursor: AsyncResult = await connection.stream(
                     select(Customers).order_by(Customers.c.creation_time))
 
-            return list_generator(cursor.mappings(), connection, Customers)
+            return list_generator(cursor.mappings(), connection, CustomerDTO)
         except Exception as e:
             await connection.rollback()
             await connection.close()

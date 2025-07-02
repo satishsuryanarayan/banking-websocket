@@ -120,7 +120,7 @@ class TransfersController:
                 select(Transfers).where(and_(Transfers.c.time.between(from_time, to_time),
                                              or_(Transfers.c.from_account_id == account_id,
                                                  Transfers.c.to_account_id == account_id))).order_by(Transfers.c.time))
-            return list_generator(cursor.mappings(), connection, Transfers)
+            return list_generator(cursor.mappings(), connection, TransferDTO)
         except AssertionError as ae:
             await connection.rollback()
             await connection.close()
