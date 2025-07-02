@@ -1,14 +1,14 @@
 import importlib
-from typing import Any, Type
+from typing import Type
 
-from esmerald import APIView, Stream, WebSocket, websocket
+from esmerald import APIView, Stream, View, WebSocket, websocket
 from esmerald.logging import logger
 
 from banking.apps.bank.v1.dtos.errordto import ErrorDTO
 from banking.apps.bank.v1.dtos.views.basedto import BaseDTO
 
 
-class BankView(APIView):
+class BankView(View):
     path = "/bank"
 
     @websocket(path="/")
@@ -19,10 +19,10 @@ class BankView(APIView):
             if "view" in dto and "method" in dto:
                 try:
                     module, cls = dto["view"].rsplit(".", 1)
-                    view_type: Type[object|APIView] = getattr(importlib.import_module(module), cls)
+                    view_type: Type[object | APIView] = getattr(importlib.import_module(module), cls)
                     method_ref = getattr(view_type, dto["method"])
                     schema_type: Type[BaseDTO] = method_ref.__annotations__["param"]
-                    return_type: Type[BaseDTO|Stream] = method_ref.__annotations__["return"]
+                    return_type: Type[BaseDTO | Stream] = method_ref.__annotations__["return"]
                     if issubclass(return_type, BaseDTO):
                         logger.debug("Handling BaseDTO...")
                         response: BaseDTO = await method_ref(schema_type.model_validate(dto))
