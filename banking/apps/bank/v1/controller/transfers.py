@@ -89,8 +89,8 @@ class TransfersController:
                                              to_account_id=to_account_id, amount=amount,
                                              time=now))
                 transfer: TransferDTO = TransferDTO(from_account_id=from_account_id,
-                                                to_account_id=to_account_id,
-                                                amount=amount, time=now)
+                                                    to_account_id=to_account_id,
+                                                    amount=amount, time=now)
                 return transfer
         except AssertionError as ae:
             logger.info("Forbidden: %s", ae, exc_info=True)

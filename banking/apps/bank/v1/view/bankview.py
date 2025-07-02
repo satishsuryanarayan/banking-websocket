@@ -11,7 +11,6 @@ from banking.apps.bank.v1.dtos.views.basedto import BaseDTO
 class BankView(View):
     path = "/bank"
 
-
     @websocket(path="/")
     async def handle(self, socket: WebSocket) -> None:
         eom: str = "<.-.-.>"

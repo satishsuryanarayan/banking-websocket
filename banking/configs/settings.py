@@ -49,7 +49,7 @@ class AppSettings(EsmeraldAPISettings):
     @cached_property
     def sql_alchemy_url(self) -> str:
         url = "mysql+aiomysql://{0}:{1}@{2}/{3}".format(self.mysql_username, self.mysql_password, self.mysql_host,
-                                                       self.mysql_database)
+                                                        self.mysql_database)
         return url
 
     @cached_property

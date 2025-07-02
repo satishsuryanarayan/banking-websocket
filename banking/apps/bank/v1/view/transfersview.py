@@ -12,7 +12,8 @@ class TransfersView:
     async def get_account_transfers(cls, param: GetAccountTransfersDTO) -> Stream:
         try:
             return Stream(
-                iterator=await TransfersController.get_account_transfers(param.account_id, param.from_time, param.to_time))
+                iterator=await TransfersController.get_account_transfers(param.account_id, param.from_time,
+                                                                         param.to_time))
         except AssertionError as ae:
             raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ae))
         except ResourceWarning as rw:
