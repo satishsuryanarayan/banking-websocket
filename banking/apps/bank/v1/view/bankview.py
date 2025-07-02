@@ -11,8 +11,10 @@ from banking.apps.bank.v1.dtos.views.basedto import BaseDTO
 class BankView(View):
     path = "/bank"
 
+
     @websocket(path="/")
     async def handle(self, socket: WebSocket) -> None:
+        eom: str = "<.-.-.>"
         await socket.accept()
         while True:
             dto = await socket.receive_json()
@@ -32,6 +34,7 @@ class BankView(View):
                         response: Stream = await method_ref(schema_type.model_validate(dto))
                         async for value in response.iterator:
                             await socket.send_text(value)
+                        await socket.send_text(eom)
                     else:
                         logger.error("Unhandled return type: " + str(return_type))
                         raise RuntimeError("Unhandled return type: " + str(return_type))
