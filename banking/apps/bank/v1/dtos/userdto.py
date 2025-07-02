@@ -7,3 +7,6 @@ class UserDTO(UsersViewDTO):
     username: str
     password: str
     email: EmailStr
+
+    def __init__(self, **data):
+        super().__init__(**data)

@@ -9,3 +9,6 @@ class TransferDTO(TransfersViewDTO):
     to_account_id: int
     amount: Decimal
     time: datetime
+
+    def __init__(self, **data):
+        super().__init__(**data)
