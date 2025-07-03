@@ -4,7 +4,7 @@ from typing import Type
 from bank.datamodel.v1.dtos.error import ErrorDTO
 from bank.datamodel.v1.dtos.views.base import BaseDTO
 from bank.protocol.message import Message
-from esmerald import APIView, Stream, View, WebSocket, websocket
+from esmerald import Stream, View, WebSocket, websocket
 from esmerald.logging import logger
 
 
@@ -19,7 +19,7 @@ class BankView(View):
             if "view" in dto and "method" in dto:
                 try:
                     module, cls = dto["view"].rsplit(".", 1)
-                    view_type: Type[object | APIView] = getattr(importlib.import_module(module), cls)
+                    view_type: Type[object] = getattr(importlib.import_module(module), cls)
                     method_ref = getattr(view_type, dto["method"])
                     schema_type: Type[BaseDTO] = method_ref.__annotations__["param"]
                     return_type: Type[BaseDTO | Stream] = method_ref.__annotations__["return"]
