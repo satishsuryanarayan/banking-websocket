@@ -3,7 +3,7 @@ from typing import Literal
 from esmerald import settings
 from esmerald.logging import logger
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncConnection, AsyncEngine
-from sqlalchemy_dlock.asyncio import create_async_sadlock
+from sqlalchemy_dlock import create_async_sadlock
 
 from banking.apps.bank.v1.model.relational import metadata
 

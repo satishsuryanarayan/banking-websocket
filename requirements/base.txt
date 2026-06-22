@@ -5,5 +5,5 @@ esmerald>=3.8.1
 gunicorn>=23.0.0
 satsur-banking-api>=0.0.5
 SQLAlchemy[asyncio]>=2.0.41
-sqlalchemy-dlock>=0.6.1.post2
+sqlalchemy-dlock[asyncio]>=0.6.1.post2
 uvicorn[standard]>=0.34.3
