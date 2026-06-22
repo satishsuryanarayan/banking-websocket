@@ -2,7 +2,7 @@ aiomysql==0.3.2
 bcrypt==5.0.0
 cryptography==49.0.0
 esmerald==3.9.4
-lilya==0.20.7
+lilya==0.20.10
 satsur-banking-api==0.0.5
 SQLAlchemy[asyncio]==2.0.51
 sqlalchemy-dlock==0.8.1
