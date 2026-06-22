@@ -61,7 +61,7 @@ event.listen(
     DDL(
         """
             ALTER TABLE transfers PARTITION BY RANGE (YEAR(time))
-                SUBPARTITION BY KEY(MONTH(time))
+                SUBPARTITION BY HASH (MONTH(time))
                 SUBPARTITIONS 12 (
                     PARTITION p0 VALUES LESS THAN (2027) ENGINE = InnoDB,
                     PARTITION p1 VALUES LESS THAN (2028) ENGINE = InnoDB,
